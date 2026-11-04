@@ -5,6 +5,7 @@
 """
 
 import json
+import random
 from functools import cache
 from pathlib import Path
 
@@ -77,3 +78,38 @@ def get_lecture_summary(lecture: int) -> str:
         available = sorted(p.stem for p in (DATA_DIR / "lectures").glob("*.md"))
         return f"第{lecture}回の要点はまだありません。用意されている回: {', '.join(available)}"
     return path.read_text(encoding="utf-8")
+
+
+def make_quiz(lecture: int) -> str:
+    """指定した回の用語から1つを選び、確認問題と答えを返す。
+
+    「第2回の確認問題を出して」のように、復習用の問題を求められたときに使う。
+    """
+    terms = [entry for entry in load_glossary() if entry["lecture"] == lecture]
+    if not terms:
+        return f"第{lecture}回の用語は用語集にありません。"
+
+    entry = random.choice(terms)
+    return json.dumps(
+        {
+            "lecture": lecture,
+            "question": f"次の説明に当てはまる用語は何ですか？ {entry['definition']}",
+            "answer": entry["term"],
+        },
+        ensure_ascii=False,
+    )
+
+
+def save_learning_log(topic: str, content: str) -> str:
+    """学習した内容の要点やメモを learning_log/ フォルダにファイルとして保存する。
+
+    「今日の学びを記録して」「LoRAについてのまとめを保存して」のように、
+    学習記録やメモの永続化を求められたときに使う。
+    """
+    log_dir = Path("learning_log")
+    log_dir.mkdir(exist_ok=True)
+    safe_topic = "".join(c for c in topic if c.isalnum() or c in ("-", "_")).strip() or "log"
+    file_path = log_dir / f"{safe_topic}.txt"
+    file_path.write_text(content, encoding="utf-8")
+    return f"学習記録を {file_path} に保存しました。"
+
