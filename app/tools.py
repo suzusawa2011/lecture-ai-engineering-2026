@@ -100,5 +100,16 @@ def make_quiz(lecture: int) -> str:
     )
 
 
+def save_learning_log(topic: str, content: str) -> str:
+    """学習した内容の要点やメモを learning_log/ フォルダにファイルとして保存する。
 
+    「今日の学びを記録して」「LoRAについてのまとめを保存して」のように、
+    学習記録やメモの永続化を求められたときに使う。
+    """
+    log_dir = Path("learning_log")
+    log_dir.mkdir(exist_ok=True)
+    safe_topic = "".join(c for c in topic if c.isalnum() or c in ("-", "_")).strip() or "log"
+    file_path = log_dir / f"{safe_topic}.txt"
+    file_path.write_text(content, encoding="utf-8")
+    return f"学習記録を {file_path} に保存しました。"
 
