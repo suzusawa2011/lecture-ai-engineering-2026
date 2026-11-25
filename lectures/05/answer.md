@@ -33,3 +33,7 @@
 - 結果（変更前後の回答・根拠、`--trace`の出力、時間・トークン数・生成API推定費用など）：
 - 改善した例と、残る失敗・制約：
 - 気づき・疑問：
+(aie2026-exercises) @suzusawa2011 ➜ /workspaces/lecture-ai-engineering-2026 (lec06) $ uv run pytest -q
+.....................                                                                                                                                     [100%]
+21 passed in 6.01s
+(aie2026-exercises) @suzusawa2011 ➜ /workspaces/lecture-ai-engineering-2026 (lec06) $ 
